@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-RSpec.describe Openai::Ruby do
+RSpec.describe OpenAI do
   it "has a version number" do
-    expect(Openai::Ruby::VERSION).not_to be nil
+    expect(OpenAI::VERSION).not_to be nil
   end
 
   it "does something useful" do

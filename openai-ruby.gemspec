@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "lib/openai/ruby/version"
+require_relative "lib/openai/version"
 
 Gem::Specification.new do |spec|
   spec.name = "openai-ruby"
-  spec.version = Openai::Ruby::VERSION
+  spec.version = OpenAI::VERSION
   spec.authors = ["Renny Ren"]
   spec.email = ["rennyrjh@gmail.com"]
 
@@ -28,8 +28,8 @@ Gem::Specification.new do |spec|
   spec.bindir = "exe"
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
-  # Uncomment to register a new dependency of your gem
-  # spec.add_dependency "example-gem", "~> 1.0"
+
+  spec.add_dependency "faraday", ">= 2.7.4"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
