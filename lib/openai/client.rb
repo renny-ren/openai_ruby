@@ -8,7 +8,7 @@ module OpenAI
       @api_key = api_key
     end
 
-    def completions(params)
+    def create_completion(params)
       Faraday.post(
         "#{BASE_URL}/v1/completions",
         params.to_json,

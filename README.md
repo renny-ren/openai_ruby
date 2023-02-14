@@ -1,22 +1,31 @@
-# Openai::Ruby
+# OpenAI Ruby library
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/openai`. To experiment with that code, run `bin/console` for an interactive prompt.
+[![Gem Version](https://badge.fury.io/rb/rb-openai.svg)](https://badge.fury.io/rb/rb-openai)
 
-TODO: Delete this and the text above, and describe your gem
+This is a Ruby wrapper for [OpenAI API](https://openai.com/api/), which provides convenient access to the OpenAI API from applications written in Ruby, helps us to build next-gen apps with OpenAI’s powerful models.
 
 ## Installation
 
-Install the gem and add to the application's Gemfile by executing:
+Add it to your Gemfile by executing:
 
-    $ bundle add openai-ruby
+```ruby
+    gem "rb-openai"
+```
 
 If bundler is not being used to manage dependencies, install the gem by executing:
 
-    $ gem install openai-ruby
+    $ gem install rb-openai
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+    client = OpenAI::Client.new("your openai key here")
+    client.create_completion(
+      model: "text-davinci-003",
+      prompt: "What is the date today?",
+      max_tokens: 100
+    )
+```
 
 ## Development
 
@@ -26,7 +35,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/openai-ruby. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/openai-ruby/blob/main/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/renny-ren/openai-ruby. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/renny-ren/openai-ruby/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 
@@ -34,4 +43,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the Openai::Ruby project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/openai-ruby/blob/main/CODE_OF_CONDUCT.md).
+Everyone interacting in the Openai::Ruby project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/renny-ren/openai-ruby/blob/main/CODE_OF_CONDUCT.md).
