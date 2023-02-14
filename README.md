@@ -9,7 +9,7 @@ This is a Ruby wrapper for [OpenAI API](https://openai.com/api/), which provides
 Add it to your Gemfile by executing:
 
 ```ruby
-    gem "rb-openai"
+  gem "rb-openai"
 ```
 
 If bundler is not being used to manage dependencies, install the gem by executing:
@@ -19,12 +19,12 @@ If bundler is not being used to manage dependencies, install the gem by executin
 ## Usage
 
 ```ruby
-    client = OpenAI::Client.new("your openai key here")
-    client.create_completion(
-      model: "text-davinci-003",
-      prompt: "What is the date today?",
-      max_tokens: 100
-    )
+  client = OpenAI::Client.new("your openai key here")
+  client.create_completion(
+    model: "text-davinci-003",
+    prompt: "What is the date today?",
+    max_tokens: 100
+  )
 ```
 
 ## Development
