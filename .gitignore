@@ -10,6 +10,7 @@
 /test/version_tmp/
 /tmp/
 Gemfile.lock
+.rspec_status
 
 # Used by dotenv library to load environment variables.
 # .env
