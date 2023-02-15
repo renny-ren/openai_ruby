@@ -21,14 +21,17 @@ If bundler is not being used to manage dependencies, install the gem by executin
     $ gem install openai_ruby
 
 ## Usage
-Before starting, you need to have an API key, if not, create one [here](https://platform.openai.com/account/api-keys) 
+
+Before starting, you need to have an API key, if not, create one [here](https://platform.openai.com/account/api-keys)
 
 create a client like this:
+
 ```ruby
 client = OpenAI::Client.new("your OpenAI key here")
 ```
 
 ### Completion
+
 ```ruby
 res = client.create_completion(
   model: "text-davinci-003", # The model which will generate the completion
@@ -43,8 +46,20 @@ res = client.create_completion(
 p res.status  # 200
 response = JSON.parse(res.body)
 
-p response.dig("choices", 0, "text")  # I am an AI created by OpenAI.
+p response.dig("choices", 0, "text")  # "I am an AI created by OpenAI."
 p response.dig('usage', 'total_tokens')  # 18
+```
+
+### Edit
+
+```ruby
+res = client.create_edit(
+  model: "text-davinci-edit-001",
+  input: "What are the date today?",
+  instruction: "Fix the grammer."
+)
+response = JSON.parse(res.body)
+p response.dig("choices", 0, "text")  # "What is the date today?\n"
 ```
 
 ### Image
@@ -57,9 +72,9 @@ p response.dig('usage', 'total_tokens')  # 18
 
 After checking out the repo, run `bin/setup` to install dependencies.
 
-You can run `rake spec` to run the tests. 
+You can run `rake spec` to run the tests.
 
-You can also run `bin/console` for an interactive prompt that will allow you to experiment. 
+You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
