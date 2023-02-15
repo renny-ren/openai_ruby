@@ -1,0 +1,16 @@
+rvm:
+  - 2.7.2
+
+install:
+  - "travis_retry bundle install"
+
+script: "bundle exec rspec"
+
+gemfile:
+  - Gemfile
+
+matrix:
+  fast_finish: true
+
+sudo: false
+cache: bundler
