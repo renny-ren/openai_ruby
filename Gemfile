@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in openai-ruby.gemspec
+# Specify your gem's dependencies in openai_ruby.gemspec
 gemspec
 
 gem "rake", "~> 13.0"

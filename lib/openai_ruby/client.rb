@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OpenAI
   class Client
     BASE_URL = "https://api.openai.com".freeze
@@ -21,7 +23,7 @@ module OpenAI
     def headers
       {
         "Content-Type" => "application/json",
-        "Authorization" => "Bearer #{api_key}"
+        "Authorization" => "Bearer #{api_key}",
       }
     end
   end

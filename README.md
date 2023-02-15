@@ -1,6 +1,6 @@
 # OpenAI Ruby library
 
-[![Gem Version](https://badge.fury.io/rb/rb-openai.svg)](https://badge.fury.io/rb/rb-openai)
+[![Gem Version](https://badge.fury.io/rb/openai_ruby.svg)](https://badge.fury.io/rb/openai_ruby)
 
 This is a Ruby wrapper for [OpenAI API](https://openai.com/api/), which provides convenient access to the OpenAI API from applications written in Ruby, helps us to build next-gen apps with OpenAI’s powerful models.
 
@@ -9,22 +9,22 @@ This is a Ruby wrapper for [OpenAI API](https://openai.com/api/), which provides
 Add it to your Gemfile by executing:
 
 ```ruby
-  gem "rb-openai"
+gem "openai_ruby"
 ```
 
 If bundler is not being used to manage dependencies, install the gem by executing:
 
-    $ gem install rb-openai
+    $ gem install openai_ruby
 
 ## Usage
 
 ```ruby
-  client = OpenAI::Client.new("your openai key here")
-  client.create_completion(
-    model: "text-davinci-003",
-    prompt: "What is the date today?",
-    max_tokens: 100
-  )
+client = OpenAI::Client.new("your openai key here")
+client.create_completion(
+  model: "text-davinci-003",
+  prompt: "What is the date today?",
+  max_tokens: 100
+)
 ```
 
 ## Development
