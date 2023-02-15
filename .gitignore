@@ -57,3 +57,6 @@ build-iPhoneSimulator/
 
 # Ignore DS_Store
 *.Ds_Store
+
+.rufo
+
