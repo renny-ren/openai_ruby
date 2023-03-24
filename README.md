@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/renny-ren/openai_ruby.svg?branch=main)](https://travis-ci.org/renny-ren/openai_ruby)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/renny-ren/openai_ruby/blob/main/LICENSE)
 
-This is a Ruby wrapper for [OpenAI API](https://openai.com/api/), which provides convenient access to the OpenAI API from applications written in Ruby.
+This is a Ruby wrapper for [OpenAI API](https://platform.openai.com/docs/api-reference), which provides convenient access to the OpenAI API from applications written in Ruby.
 
 Let's build next-gen apps with OpenAI’s powerful models.
 
