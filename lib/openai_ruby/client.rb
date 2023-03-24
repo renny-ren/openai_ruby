@@ -18,6 +18,23 @@ module OpenAI
       )
     end
 
+    def create_chat_completion(params = {}, &block)
+      if params[:stream]
+        connection.post("/v1/chat/completions") do |req|
+          req.body = params.to_json
+          req.options.on_data = Proc.new do |chunk, overall_received_bytes, env|
+            block.call(chunk, overall_received_bytes, env)
+          end
+        end
+      else
+        connection.post(
+          "/v1/chat/completions",
+          params.to_json,
+          headers
+        )
+      end
+    end
+
     def create_edit(params = {})
       Faraday.post(
         "#{BASE_URL}/v1/edits",
@@ -27,6 +44,10 @@ module OpenAI
     end
 
     private
+
+    def connection
+      Faraday.new(url: BASE_URL, headers: headers)
+    end
 
     def headers
       {
