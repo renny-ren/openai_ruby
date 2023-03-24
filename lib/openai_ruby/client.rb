@@ -22,16 +22,12 @@ module OpenAI
       if params[:stream]
         connection.post("/v1/chat/completions") do |req|
           req.body = params.to_json
-          req.options.on_data = Proc.new do |chunk, overall_received_bytes, env|
+          req.options.on_data = proc do |chunk, overall_received_bytes, env|
             block.call(chunk, overall_received_bytes, env)
           end
         end
       else
-        connection.post(
-          "/v1/chat/completions",
-          params.to_json,
-          headers
-        )
+        connection.post("/v1/chat/completions", params.to_json, headers)
       end
     end
 
