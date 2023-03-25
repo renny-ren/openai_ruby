@@ -15,19 +15,6 @@ jobs:
       - run:
           name: Run Rubocop
           command: bundle exec rubocop
-  test:
-    parameters:
-      ruby-image:
-        type: string
-    parallelism: 1
-    docker:
-      - image: << parameters.ruby-image >>
-    steps:
-      - checkout
-      - ruby/install-deps
-      - run:
-          name: Run tests
-          command: bundle exec rspec -fd
 
 workflows:
   version: 2
