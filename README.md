@@ -1,7 +1,6 @@
 # OpenAI Ruby library
 
 [![Gem Version](https://badge.fury.io/rb/openai_ruby.svg)](https://badge.fury.io/rb/openai_ruby)
-[![Build Status](https://travis-ci.org/renny-ren/openai_ruby.svg?branch=main)](https://travis-ci.org/renny-ren/openai_ruby)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/renny-ren/openai_ruby/blob/main/LICENSE)
 
 This is a Ruby wrapper for [OpenAI API](https://platform.openai.com/docs/api-reference), which provides convenient access to the OpenAI API from applications written in Ruby.
