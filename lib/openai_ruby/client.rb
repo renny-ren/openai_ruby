@@ -18,12 +18,14 @@ module OpenAI
       )
     end
 
-    def create_chat_completion(params = {}, &block)
+    def create_chat_completion(params = {})
       if params[:stream]
         connection.post("/v1/chat/completions") do |req|
           req.body = params.to_json
           req.options.on_data = proc do |chunk, overall_received_bytes, env|
-            block.call(chunk, overall_received_bytes, env)
+            if block_given?
+              yield(chunk, overall_received_bytes, env)
+            end
           end
         end
       else
