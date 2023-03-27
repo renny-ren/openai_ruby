@@ -23,9 +23,7 @@ module OpenAI
         connection.post("/v1/chat/completions") do |req|
           req.body = params.to_json
           req.options.on_data = proc do |chunk, overall_received_bytes, env|
-            if block_given?
-              yield(chunk, overall_received_bytes, env)
-            end
+            yield(chunk, overall_received_bytes, env) if block_given?
           end
         end
       else
