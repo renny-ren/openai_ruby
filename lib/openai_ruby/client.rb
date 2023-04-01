@@ -27,7 +27,7 @@ module OpenAI
           end
         end
       else
-        connection.post("/v1/chat/completions", params.to_json, headers)
+        connection.post("/v1/chat/completions", params.to_json)
       end
     end
 
@@ -37,6 +37,10 @@ module OpenAI
         params.to_json,
         headers
       )
+    end
+
+    def images
+      @images ||= OpenAI::Images.new(connection)
     end
 
     private

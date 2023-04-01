@@ -2,6 +2,7 @@
 
 require "faraday"
 require "openai_ruby/client"
+require "openai_ruby/images"
 require "openai_ruby/version"
 
 module OpenAI
