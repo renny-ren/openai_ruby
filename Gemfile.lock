@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    openai_ruby (0.3.3)
+    openai_ruby (0.3.4)
       faraday (~> 2.7)
 
 GEM
