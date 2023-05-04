@@ -19,7 +19,8 @@ module OpenAI
     end
 
     def create_chat_completion(params = {})
-      if params[:stream]
+      params.deep_stringify_keys!
+      if params["stream"]
         connection.post("/v1/chat/completions") do |req|
           req.body = params.to_json
           req.options.on_data = proc do |chunk, overall_received_bytes, env|
