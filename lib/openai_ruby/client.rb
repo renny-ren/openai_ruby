@@ -47,13 +47,13 @@ module OpenAI
     private
 
     def connection
-      Faraday.new(url: BASE_URL, headers: headers)
+      Faraday.new(url: BASE_URL, headers: headers, request: { timeout: 240 })
     end
 
     def headers
       {
         "Content-Type" => "application/json",
-        "Authorization" => "Bearer #{api_key}"
+        "Authorization" => "Bearer #{api_key}",
       }
     end
   end
