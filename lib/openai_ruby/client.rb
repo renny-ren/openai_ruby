@@ -4,10 +4,11 @@ module OpenAI
   class Client
     BASE_URL = "https://api.openai.com"
 
-    attr_reader :api_key
+    attr_reader :api_key, :options
 
-    def initialize(api_key)
+    def initialize(api_key, options)
       @api_key = api_key
+      @options = options
     end
 
     def create_completion(params = {})
@@ -47,7 +48,7 @@ module OpenAI
     private
 
     def connection
-      Faraday.new(url: BASE_URL, headers: headers, request: { timeout: 240 })
+      Faraday.new({ url: BASE_URL, headers: headers }.merge(options))
     end
 
     def headers

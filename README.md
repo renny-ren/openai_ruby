@@ -29,7 +29,16 @@ create a client like this:
 client = OpenAI::Client.new("your OpenAI key here")
 ```
 
-### Completion 
+Or you can pass a hash of options to customize the connection:
+
+```ruby
+client = OpenAI::Client.new("your OpenAI key here", { request: { timeout: 20 } })
+```
+
+For more options check [here](https://lostisland.github.io/faraday/#/customization/connection-options)
+
+### Completion
+
 https://platform.openai.com/docs/api-reference/completions
 
 ```ruby
@@ -48,7 +57,8 @@ p response.dig("choices", 0, "text")  # "I am an AI created by OpenAI."
 p response.dig('usage', 'total_tokens')  # 18
 ```
 
-### Chat Completion 
+### Chat Completion
+
 https://platform.openai.com/docs/api-reference/chat/create
 
 If you set `stream` param to `true`, a block will be called with the chunk data:
@@ -74,6 +84,7 @@ end
 ```
 
 ### Edit
+
 https://platform.openai.com/docs/api-reference/edits
 
 ```ruby
