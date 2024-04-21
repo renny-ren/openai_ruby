@@ -6,7 +6,7 @@ module OpenAI
 
     attr_reader :api_key, :options
 
-    def initialize(api_key, options)
+    def initialize(api_key, options = {})
       @api_key = api_key
       @options = options
     end
