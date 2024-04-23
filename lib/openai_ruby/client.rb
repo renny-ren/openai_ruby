@@ -20,12 +20,21 @@ module OpenAI
     end
 
     def create_chat_completion(params = {})
+      parser = EventStreamParser::Parser.new
+
       params.deep_stringify_keys!
       if params["stream"]
         connection.post("/v1/chat/completions") do |req|
           req.body = params.to_json
           req.options.on_data = proc do |chunk, overall_received_bytes, env|
-            yield(chunk, overall_received_bytes, env) if block_given?
+            if env && env.status != 200
+              raise_error = Faraday::Response::RaiseError.new
+              raise_error.on_complete(env.merge(body: try_parse_json(chunk)))
+            end
+
+            parser.feed(chunk) do |_type, data|
+              yield(JSON.parse(data)) if block_given? && data != "[DONE]"
+            end
           end
         end
       else
@@ -56,6 +65,12 @@ module OpenAI
         "Content-Type" => "application/json",
         "Authorization" => "Bearer #{api_key}"
       }
+    end
+
+    def try_parse_json(maybe_json, default_value = nil)
+      JSON.parse(maybe_json)
+    rescue JSON::ParserError
+      default_value || maybe_json
     end
   end
 end

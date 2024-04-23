@@ -71,15 +71,8 @@ If you set `stream` param to `true`, a block will be called with the chunk data:
 #   temperature: 1,
 #   stream: true,
 # }
-res = client.create_chat_completion(params) do |chunk, overall_received_bytes, env|
-  data = chunk[/data: (.*)\n\n$/, 1]
-  p data # {"id":"chatcmpl-6xcOWMQcilJUwJiosi7Rht6Fvuu3D","object":"chat.completion.chunk","created":1679666960,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"content":"Hello"},"index":0,"finish_reason":null}]}
-  if data == "[DONE]"
-    # the stream is end
-  else
-    response = JSON.parse(data)
-    p response.dig("choices", 0, "text")  # "Hello"
-  end
+res = client.create_chat_completion(params) do |data|
+  p data.dig("choices", 0, "delta", "content") # "Hello"
 end
 ```
 
