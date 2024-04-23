@@ -26,7 +26,7 @@ module OpenAI
       if params["stream"]
         connection.post("/v1/chat/completions") do |req|
           req.body = params.to_json
-          req.options.on_data = proc do |chunk, overall_received_bytes, env|
+          req.options.on_data = proc do |chunk, _overall_received_bytes, env|
             if env && env.status != 200
               raise_error = Faraday::Response::RaiseError.new
               raise_error.on_complete(env.merge(body: try_parse_json(chunk)))
