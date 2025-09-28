@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    openai_ruby (0.4.0)
+    openai_ruby (0.4.3)
       event_stream_parser (~> 1.0)
       faraday (~> 2.7)
 
@@ -55,6 +55,7 @@ GEM
 PLATFORMS
   arm64-darwin-21
   arm64-darwin-22
+  arm64-darwin-24
   x86_64-linux
 
 DEPENDENCIES
