@@ -2,18 +2,19 @@
 
 module OpenAI
   class Client
-    BASE_URL = "https://api.openai.com"
+    DEFAULT_BASE_URI = "https://api.openai.com"
 
-    attr_reader :api_key, :options
+    attr_reader :api_key, :options, :base_uri
 
     def initialize(api_key, options = {})
       @api_key = api_key
       @options = options
+      @base_uri = options[:base_uri] || DEFAULT_BASE_URI
     end
 
     def create_completion(params = {})
       Faraday.post(
-        "#{BASE_URL}/v1/completions",
+        "#{base_uri}/v1/completions",
         params.to_json,
         headers
       )
@@ -44,7 +45,7 @@ module OpenAI
 
     def create_edit(params = {})
       Faraday.post(
-        "#{BASE_URL}/v1/edits",
+        "#{base_uri}/v1/edits",
         params.to_json,
         headers
       )
@@ -57,13 +58,13 @@ module OpenAI
     private
 
     def connection
-      Faraday.new({ url: BASE_URL, headers: headers }.merge(options))
+      Faraday.new({ url: base_uri, headers: headers }.merge(options.except(:base_uri)))
     end
 
     def headers
       {
         "Content-Type" => "application/json",
-        "Authorization" => "Bearer #{api_key}"
+        "Authorization" => "Bearer #{api_key}",
       }
     end
 

@@ -32,7 +32,7 @@ client = OpenAI::Client.new("your OpenAI key here")
 Or you can pass a hash of options to customize the connection:
 
 ```ruby
-client = OpenAI::Client.new("your OpenAI key here", { request: { timeout: 20 } })
+client = OpenAI::Client.new("your OpenAI key here", { base_uri: "https://example.com", request: { timeout: 20 } })
 ```
 
 For more options check [here](https://lostisland.github.io/faraday/#/customization/connection-options)
