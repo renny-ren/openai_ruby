@@ -55,6 +55,25 @@ module OpenAI
       @images ||= OpenAI::Images.new(connection)
     end
 
+    def create_realtime_call(sdp_offer:, session: nil)
+      uri = "#{base_uri}/v1/realtime/calls"
+
+      if session
+        boundary, body = build_multipart_body(sdp_offer, session)
+        Faraday.post(uri) do |req|
+          req.headers["Authorization"] = "Bearer #{api_key}"
+          req.headers["Content-Type"] = "multipart/form-data; boundary=#{boundary}"
+          req.body = body
+        end
+      else
+        Faraday.post(uri) do |req|
+          req.headers["Content-Type"] = "application/sdp"
+          req.headers["Authorization"] = "Bearer #{api_key}"
+          req.body = sdp_offer
+        end
+      end
+    end
+
     private
 
     def connection
@@ -72,6 +91,18 @@ module OpenAI
       JSON.parse(maybe_json)
     rescue JSON::ParserError
       default_value || maybe_json
+    end
+
+    def build_multipart_body(sdp_offer, session)
+      boundary = "----RubyFormBoundary#{SecureRandom.hex(16)}"
+      parts = [
+        ["--#{boundary}", 'Content-Disposition: form-data; name="sdp"', "Content-Type: application/sdp", "", sdp_offer],
+        ["--#{boundary}", 'Content-Disposition: form-data; name="session"', "Content-Type: application/json", "",
+         session.to_json],
+        ["--#{boundary}--"]
+      ]
+
+      [boundary, parts.flatten.join("\r\n")]
     end
   end
 end
