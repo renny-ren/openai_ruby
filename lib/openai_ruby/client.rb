@@ -51,6 +51,11 @@ module OpenAI
       )
     end
 
+    def create_speech(params = {})
+      params.deep_stringify_keys!
+      connection.post("/v1/audio/speech", params.to_json)
+    end
+
     def images
       @images ||= OpenAI::Images.new(connection)
     end
