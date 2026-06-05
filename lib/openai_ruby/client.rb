@@ -82,7 +82,9 @@ module OpenAI
     private
 
     def connection
-      Faraday.new({ url: base_uri, headers: headers }.merge(options.except(:base_uri)))
+      Faraday.new({ url: base_uri, headers: headers }.merge(options.except(:base_uri))) do |faraday|
+        faraday.request :multipart
+      end
     end
 
     def headers

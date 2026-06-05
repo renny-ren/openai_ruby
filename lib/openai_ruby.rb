@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "faraday"
+require "faraday/multipart"
 require "event_stream_parser"
 require "openai_ruby/client"
 require "openai_ruby/images"
