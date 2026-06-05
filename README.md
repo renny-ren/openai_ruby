@@ -92,8 +92,57 @@ p response.dig("choices", 0, "text")  # "What is the date today?\n"
 
 ### Image
 
-```ruby
+https://platform.openai.com/docs/api-reference/images
 
+Generate an image:
+
+```ruby
+require "base64"
+
+res = client.images.generate(
+  model: "gpt-image-2",
+  prompt: "A watercolor painting of a ruby gem on a desk",
+  size: "1024x1024"
+)
+
+response = JSON.parse(res.body)
+image_data = response.dig("data", 0, "b64_json")
+
+File.binwrite("ruby-gem.png", Base64.decode64(image_data)) if image_data
+```
+
+Edit one or more images:
+
+```ruby
+require "base64"
+
+File.open("ruby-gem.png", "rb") do |image|
+  res = client.images.edit(
+    model: "gpt-image-2",
+    image: image,
+    prompt: "Add a small OpenAI logo sticker to the desk",
+    size: "1024x1024"
+  )
+
+  response = JSON.parse(res.body)
+  image_data = response.dig("data", 0, "b64_json")
+
+  File.binwrite("ruby-gem-edited.png", Base64.decode64(image_data)) if image_data
+end
+```
+
+You can also pass multiple images when editing:
+
+```ruby
+File.open("image-1.png", "rb") do |image_1|
+  File.open("image-2.png", "rb") do |image_2|
+    client.images.edit(
+      model: "gpt-image-2",
+      image: [image_1, image_2],
+      prompt: "Combine these images into one cohesive scene"
+    )
+  end
+end
 ```
 
 ## Development
