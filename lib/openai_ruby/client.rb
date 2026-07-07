@@ -61,17 +61,15 @@ module OpenAI
     end
 
     def create_realtime_call(sdp_offer:, session: nil)
-      uri = "#{base_uri}/v1/realtime/calls"
-
       if session
         boundary, body = build_multipart_body(sdp_offer, session)
-        Faraday.post(uri) do |req|
+        connection.post("/v1/realtime/calls") do |req|
           req.headers["Authorization"] = "Bearer #{api_key}"
           req.headers["Content-Type"] = "multipart/form-data; boundary=#{boundary}"
           req.body = body
         end
       else
-        Faraday.post(uri) do |req|
+        connection.post("/v1/realtime/calls") do |req|
           req.headers["Content-Type"] = "application/sdp"
           req.headers["Authorization"] = "Bearer #{api_key}"
           req.body = sdp_offer
