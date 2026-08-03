@@ -23,8 +23,7 @@ module OpenAI
     def create_chat_completion(params = {})
       parser = EventStreamParser::Parser.new
 
-      params.deep_stringify_keys!
-      if params["stream"]
+      if streaming?(params)
         connection.post("/v1/chat/completions") do |req|
           req.body = params.to_json
           req.options.on_data = proc do |chunk, _overall_received_bytes, env|
@@ -52,7 +51,6 @@ module OpenAI
     end
 
     def create_speech(params = {})
-      params.deep_stringify_keys!
       connection.post("/v1/audio/speech", params.to_json)
     end
 
@@ -96,6 +94,10 @@ module OpenAI
       JSON.parse(maybe_json)
     rescue JSON::ParserError
       default_value || maybe_json
+    end
+
+    def streaming?(params)
+      params[:stream] || params["stream"]
     end
 
     def build_multipart_body(sdp_offer, session)
