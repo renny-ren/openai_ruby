@@ -20,26 +20,10 @@ module OpenAI
       )
     end
 
-    def create_chat_completion(params = {})
-      parser = EventStreamParser::Parser.new
+    def create_chat_completion(params = {}, &block)
+      return connection.post("/v1/chat/completions", params.to_json) unless streaming?(params)
 
-      if streaming?(params)
-        connection.post("/v1/chat/completions") do |req|
-          req.body = params.to_json
-          req.options.on_data = proc do |chunk, _overall_received_bytes, env|
-            if env && env.status != 200
-              raise_error = Faraday::Response::RaiseError.new
-              raise_error.on_complete(env.merge(body: try_parse_json(chunk)))
-            end
-
-            parser.feed(chunk) do |_type, data|
-              yield(JSON.parse(data)) if block_given? && data != "[DONE]"
-            end
-          end
-        end
-      else
-        connection.post("/v1/chat/completions", params.to_json)
-      end
+      create_streaming_chat_completion(params, &block)
     end
 
     def create_edit(params = {})
@@ -98,6 +82,33 @@ module OpenAI
 
     def streaming?(params)
       params[:stream] || params["stream"]
+    end
+
+    def create_streaming_chat_completion(params, &block)
+      parser = EventStreamParser::Parser.new
+      error_body = +""
+      response = connection.post("/v1/chat/completions") do |req|
+        req.body = params.to_json
+        req.options.on_data = proc do |chunk, _overall_received_bytes, env|
+          handle_streaming_chunk(parser, error_body, chunk, env, &block)
+        end
+      end
+
+      raise_streaming_response_error(response, error_body) unless response.status == 200
+      response
+    end
+
+    def handle_streaming_chunk(parser, error_body, chunk, env)
+      return error_body << chunk unless env&.status == 200
+
+      parser.feed(chunk) do |_type, data|
+        yield(JSON.parse(data)) if block_given? && data != "[DONE]"
+      end
+    end
+
+    def raise_streaming_response_error(response, body)
+      error_env = response.env.merge(body: try_parse_json(body))
+      Faraday::Response::RaiseError.new.on_complete(error_env)
     end
 
     def build_multipart_body(sdp_offer, session)

@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.5.6] - 2026-08-15
+
+- Preserve complete error response bodies when streamed HTTP errors arrive in multiple chunks.
+
 ## [0.5.5] - 2026-08-03
 
 - Avoid mutating request parameters in chat completion and speech requests, including frozen nested schemas.

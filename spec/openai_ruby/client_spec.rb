@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/BlockLength
 RSpec.describe OpenAI::Client, "#create_chat_completion" do
   let(:connection) { instance_double(Faraday::Connection) }
   let(:client) { described_class.new("test-api-key") }
@@ -28,7 +29,75 @@ RSpec.describe OpenAI::Client, "#create_chat_completion" do
     expect(schema[:required]).to equal(required_fields)
     expect(required_fields).to be_frozen
   end
+
+  it "collects a complete streaming error body before raising" do
+    response_body = {
+      error: {
+        message: "Invalid image URL. The URL must be a valid HTTP or HTTPS URL.",
+        type: "invalid_request_error",
+        param: "messages[1].content[1].image_url.url",
+        code: "invalid_value"
+      }
+    }.to_json
+    chunks = [response_body.byteslice(0, 20), response_body.byteslice(20..)]
+    allow(client).to receive(:connection).and_return(
+      streaming_connection(status: 400, chunks: chunks, headers: { "x-request-id" => "req_complete_error" })
+    )
+
+    matcher = raise_error(Faraday::BadRequestError) do |error|
+      expect(error.response_body).to eq(JSON.parse(response_body))
+      expect(error.response_headers["x-request-id"]).to eq("req_complete_error")
+    end
+    expect do
+      client.create_chat_completion(model: "gpt-test", messages: [], stream: true)
+    end.to matcher
+  end
+
+  it "preserves successful streaming callbacks" do
+    event = { choices: [{ delta: { content: "Hello" } }] }
+    chunks = ["data: #{event.to_json}\n\n", "data: [DONE]\n\n"]
+    allow(client).to receive(:connection).and_return(streaming_connection(status: 200, chunks: chunks))
+    received = []
+
+    response = client.create_chat_completion(model: "gpt-test", messages: [], stream: true) do |data|
+      received << data
+    end
+
+    expect(response.status).to eq(200)
+    expect(received).to eq([JSON.parse(event.to_json)])
+  end
+
+  def streaming_connection(status:, chunks:, headers: {})
+    instance_double(Faraday::Connection).tap do |streaming_connection|
+      allow(streaming_connection).to receive(:post) do |path, &configure_request|
+        options = Faraday::RequestOptions.new
+        request = Struct.new(:body, :options).new(nil, options)
+        configure_request.call(request)
+        env = streaming_env(path, request, status, headers)
+        emit_chunks(request, env, chunks)
+        Faraday::Response.new(env)
+      end
+    end
+  end
+
+  def streaming_env(path, request, status, headers)
+    Faraday::Env.from(
+      method: :post, request_body: request.body, url: URI("https://api.openai.com#{path}"),
+      request: request.options, request_headers: { "Authorization" => "Bearer test-api-key" },
+      status: status, response_headers: headers, response_body: nil,
+      reason_phrase: status == 200 ? "OK" : "Bad Request"
+    )
+  end
+
+  def emit_chunks(request, env, chunks)
+    total_bytes = 0
+    chunks.each do |chunk|
+      total_bytes += chunk.bytesize
+      request.options.on_data.call(chunk, total_bytes, env)
+    end
+  end
 end
+# rubocop:enable Metrics/BlockLength
 
 RSpec.describe OpenAI::Client, "#create_speech" do
   let(:connection) { instance_double(Faraday::Connection) }
