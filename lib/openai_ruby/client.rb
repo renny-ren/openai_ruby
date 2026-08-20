@@ -13,11 +13,7 @@ module OpenAI
     end
 
     def create_completion(params = {})
-      Faraday.post(
-        "#{base_uri}/v1/completions",
-        params.to_json,
-        headers
-      )
+      Faraday.post("#{base_uri}/v1/completions", params.to_json, headers)
     end
 
     def create_chat_completion(params = {}, &block)
@@ -33,11 +29,7 @@ module OpenAI
     end
 
     def create_edit(params = {})
-      Faraday.post(
-        "#{base_uri}/v1/edits",
-        params.to_json,
-        headers
-      )
+      Faraday.post("#{base_uri}/v1/edits", params.to_json, headers)
     end
 
     def create_speech(params = {})

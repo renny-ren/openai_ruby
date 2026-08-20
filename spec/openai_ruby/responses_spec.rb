@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/BlockLength
 RSpec.describe OpenAI::Client, "#create_response" do
   let(:client) { described_class.new("test-api-key") }
 
@@ -45,7 +46,7 @@ RSpec.describe OpenAI::Client, "#create_response" do
   it "yields parsed Responses streaming events" do
     events = [
       { type: "response.output_text.delta", delta: "Hello" },
-      { type: "response.completed", response: { id: "resp_123" } },
+      { type: "response.completed", response: { id: "resp_123" } }
     ]
     chunks = events.map { |event| "data: #{event.to_json}\n\n" }
     allow(client).to receive(:connection).and_return(streaming_connection(status: 200, chunks: chunks))
@@ -64,9 +65,12 @@ RSpec.describe OpenAI::Client, "#create_response" do
     chunks = [response_body.byteslice(0, 12), response_body.byteslice(12..)]
     allow(client).to receive(:connection).and_return(streaming_connection(status: 400, chunks: chunks))
 
+    matcher = raise_error(Faraday::BadRequestError) do |error|
+      expect(error.response_body).to eq(JSON.parse(response_body))
+    end
     expect do
       client.create_response(model: "gpt-test", input: "Hello", stream: true)
-    end.to raise_error(Faraday::BadRequestError) { |error| expect(error.response_body).to eq(JSON.parse(response_body)) }
+    end.to matcher
   end
 
   def streaming_connection(status:, chunks:)
@@ -75,24 +79,28 @@ RSpec.describe OpenAI::Client, "#create_response" do
         options = Faraday::RequestOptions.new
         request = Struct.new(:body, :options).new(nil, options)
         configure_request.call(request)
-        env = Faraday::Env.from(
-          method: :post,
-          request_body: request.body,
-          url: URI("https://api.openai.com#{path}"),
-          request: request.options,
-          request_headers: {},
-          status: status,
-          response_headers: {},
-          response_body: nil,
-          reason_phrase: status == 200 ? "OK" : "Bad Request"
-        )
-        total_bytes = 0
-        chunks.each do |chunk|
-          total_bytes += chunk.bytesize
-          request.options.on_data.call(chunk, total_bytes, env)
-        end
+        env = streaming_env(path, request, status)
+        emit_chunks(request, env, chunks)
         Faraday::Response.new(env)
       end
     end
   end
+
+  def streaming_env(path, request, status)
+    Faraday::Env.from(
+      method: :post, request_body: request.body, url: URI("https://api.openai.com#{path}"),
+      request: request.options, request_headers: {}, status: status,
+      response_headers: {}, response_body: nil,
+      reason_phrase: status == 200 ? "OK" : "Bad Request"
+    )
+  end
+
+  def emit_chunks(request, env, chunks)
+    total_bytes = 0
+    chunks.each do |chunk|
+      total_bytes += chunk.bytesize
+      request.options.on_data.call(chunk, total_bytes, env)
+    end
+  end
 end
+# rubocop:enable Metrics/BlockLength
