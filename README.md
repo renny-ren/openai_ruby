@@ -76,6 +76,21 @@ res = client.create_chat_completion(params) do |data|
 end
 ```
 
+### Responses
+
+Use `create_response` for the Responses API. When `stream` is true, the block receives each parsed SSE event:
+
+```ruby
+res = client.create_response(
+  model: "gpt-5.6-terra",
+  input: "Explain why the answer is correct.",
+  store: false,
+  stream: true
+) do |event|
+  print event["delta"] if event["type"] == "response.output_text.delta"
+end
+```
+
 ### Edit
 
 https://platform.openai.com/docs/api-reference/edits

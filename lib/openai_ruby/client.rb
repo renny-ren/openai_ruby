@@ -23,7 +23,13 @@ module OpenAI
     def create_chat_completion(params = {}, &block)
       return connection.post("/v1/chat/completions", params.to_json) unless streaming?(params)
 
-      create_streaming_chat_completion(params, &block)
+      create_streaming_request("/v1/chat/completions", params, &block)
+    end
+
+    def create_response(params = {}, &block)
+      return connection.post("/v1/responses", params.to_json) unless streaming?(params)
+
+      create_streaming_request("/v1/responses", params, &block)
     end
 
     def create_edit(params = {})
@@ -84,10 +90,10 @@ module OpenAI
       params[:stream] || params["stream"]
     end
 
-    def create_streaming_chat_completion(params, &block)
+    def create_streaming_request(path, params, &block)
       parser = EventStreamParser::Parser.new
       error_body = +""
-      response = connection.post("/v1/chat/completions") do |req|
+      response = connection.post(path) do |req|
         req.body = params.to_json
         req.options.on_data = proc do |chunk, _overall_received_bytes, env|
           handle_streaming_chunk(parser, error_body, chunk, env, &block)
